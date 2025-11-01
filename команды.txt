@@ -1,0 +1,6 @@
+dvc init
+dvc remote add -d local_storage /home/<user>/dvc_storage/plant-pathology
+dvc add data/images
+dvc push
+
+

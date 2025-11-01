@@ -1,0 +1,77 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/data/preprocess.py --input_csv data/train.csv --input_dir 
+      data/images --output_dir data_processed --img_size 224 --val_split 0.2 
+      --random_seed 42
+    deps:
+    - path: data/images
+      hash: md5
+      md5: cb615a52815e68da99ced6c4d5e578b0.dir
+      size: 823687857
+      nfiles: 3642
+    - path: data/train.csv
+      hash: md5
+      md5: b25bf94c2c1d174c83c7b61ef5b1f9d0
+      size: 33534
+    - path: src/data/preprocess.py
+      hash: md5
+      md5: db30f9ac7eb0f3077d35e04c8e27f00c
+      size: 2032
+    outs:
+    - path: data_processed
+      hash: md5
+      md5: d2e7150e89e75b4a24397a7531c61ee2.dir
+      size: 16160409
+      nfiles: 1823
+  augment:
+    cmd: python src/data/augment.py --input_dir data_processed --output_dir 
+      data_augmented --n_aug 1 --img_size 224 --horizontal_flip true 
+      --rotate_limit 20 --brightness_contrast 0.3
+    deps:
+    - path: data_processed
+      hash: md5
+      md5: d2e7150e89e75b4a24397a7531c61ee2.dir
+      size: 16160409
+      nfiles: 1823
+    - path: src/data/augment.py
+      hash: md5
+      md5: f8c884795eb22cd9b3bc7873e4203228
+      size: 2341
+    outs:
+    - path: data_augmented
+      hash: md5
+      md5: d4e48f8fd43ddd10e9b3d78ecdf310bb.dir
+      size: 28613526
+      nfiles: 3277
+  run_experiments:
+    cmd: python src/models/run_experiments.py
+    deps:
+    - path: data_augmented
+      hash: md5
+      md5: d4e48f8fd43ddd10e9b3d78ecdf310bb.dir
+      size: 28613526
+      nfiles: 3277
+    - path: data_processed
+      hash: md5
+      md5: d2e7150e89e75b4a24397a7531c61ee2.dir
+      size: 16160409
+      nfiles: 1823
+    - path: params.yaml
+      hash: md5
+      md5: 31f8046f8f5272f9bfccd80cadbb182f
+      size: 485
+    - path: src/models/run_experiments.py
+      hash: md5
+      md5: d132df3b3e52c3203214ac4b66078204
+      size: 1520
+    - path: src/models/train.py
+      hash: md5
+      md5: fdb7b2735c25e6207cf6669fa4956124
+      size: 9723
+    outs:
+    - path: models
+      hash: md5
+      md5: b843807a5abd58d5a179267bf74e442c.dir
+      size: 579252968
+      nfiles: 72

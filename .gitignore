@@ -1,7 +1,6 @@
 .venv/
 __pycache__/
 *.pyc
-dvc.lock
 *.pth
 *.pt
 *.zip
@@ -213,3 +212,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+/data_processed
+/data_augmented
+/models

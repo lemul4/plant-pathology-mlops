@@ -1,0 +1,30 @@
+preprocess:
+  img_size: 224
+  val_split: 0.2
+  random_seed: 42
+
+augment:
+  n_aug_per_image: 1
+  img_size: 224
+  horizontal_flip: true
+  rotate_limit: 20
+  brightness_contrast: 0.3
+
+
+train:
+  model_name: "resnet18"
+  models: ["alexnet", "resnet18", "efficientnet_b0"]
+  batch_size: 16
+  lr: 5e-4
+  epochs: 5
+  img_size: 224
+  random_seed: 42
+  use_augmentation: [true, false]
+
+
+eval:
+  batch_size: 16
+  img_size: 224
+
+run_experiments:
+  single_model: None

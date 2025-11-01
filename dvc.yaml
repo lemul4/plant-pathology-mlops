@@ -1,0 +1,50 @@
+stages:
+  preprocess:
+    cmd: python src/data/preprocess.py --input_csv data/train.csv --input_dir data/images --output_dir data_processed --img_size ${preprocess.img_size} --val_split ${preprocess.val_split} --random_seed ${preprocess.random_seed}
+    deps:
+      - src/data/preprocess.py
+      - data/train.csv
+      - data/images
+    outs:
+      - data_processed
+
+  augment:
+    cmd: python src/data/augment.py --input_dir data_processed --output_dir data_augmented --n_aug ${augment.n_aug_per_image} --img_size ${augment.img_size} --horizontal_flip ${augment.horizontal_flip} --rotate_limit ${augment.rotate_limit} --brightness_contrast ${augment.brightness_contrast}
+    deps:
+      - src/data/augment.py
+      - data_processed
+    outs:
+      - data_augmented
+
+  run_experiments:
+    cmd: python src/models/run_experiments.py
+    deps:
+      - src/models/run_experiments.py
+      - src/models/train.py
+      - params.yaml
+      - data_processed
+      - data_augmented
+    outs:
+      - models
+
+# train:
+#   cmd: python src/models/train.py --data_dir data_augmented --model_name ${train.model_name} ...
+#   deps:
+#     - src/models/train.py
+#     - params.yaml
+#     - data_augmented
+#   outs:
+#     - models
+#   metrics:
+#     - metrics/train_metrics.json
+
+  eval:
+    cmd: python src/models/eval.py --model_dir models --data_dir data_augmented --output_dir reports --batch_size ${eval.batch_size} --img_size ${eval.img_size}
+    deps:
+      - src/models/eval.py
+      - models
+      - data_augmented
+    outs:
+      - reports
+    metrics:
+      - metrics/eval_metrics.json
